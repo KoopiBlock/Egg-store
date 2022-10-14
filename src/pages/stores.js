@@ -3,7 +3,6 @@ import { FaExternalLinkAlt } from 'react-icons/fa';
 
 import Layout from '@components/Layout';
 import Container from '@components/Container';
-import Button from '@components/Button';
 
 import styles from '@styles/Page.module.scss'
 

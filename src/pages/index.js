@@ -43,7 +43,7 @@ export default function Home({ home, products }) {
               className={styles.heroImage} 
               width={heroBackground.width} 
               height={heroBackground.height}
-              src={buildImage(heroBackground.public_id).toURL()} 
+              src={heroBackground.url} 
               alt="" />
             </a>
           </Link>
