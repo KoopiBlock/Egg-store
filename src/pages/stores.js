@@ -7,7 +7,15 @@ import Button from '@components/Button';
 
 import styles from '@styles/Page.module.scss'
 
-export default function Stores() {
+import { 
+  ApolloClient,
+  InMemoryCache,
+  gql, 
+  } from '@apollo/client';
+
+  
+
+export default function Stores({ storeLocations }) {
   return (
     <Layout>
       <Head>
@@ -22,33 +30,37 @@ export default function Stores() {
 
           <div className={styles.storesLocations}>
             <ul className={styles.locations}>
-              <li>
+              {storeLocations.map(location => {
+                return (             
+              <li key={location.id}>
                 <p className={styles.locationName}>
-                  Name
+                  {location.name}
                 </p>
                 <address>
-                  Address
+                  {location.address}
                 </address>
                 <p>
-                  1234567890
+                  {location.phoneNumber}
                 </p>
                 <p className={styles.locationDiscovery}>
                   <button>
                     View on Map
                   </button>
-                  <a href="https://www.google.com/maps/" target="_blank" rel="noreferrer">
+                  <a href={`https://www.google.com/maps/dir//${location.location.latitude},${location.location.longitude}`} target="_blank" rel="noreferrer">
                     Get Directions
                     <FaExternalLinkAlt />
                   </a>
                 </p>
               </li>
+               )
+              })}
             </ul>
           </div>
 
           <div className={styles.storesMap}>
             <div className={styles.storesMapContainer}>
               <div className={styles.map}>
-                Map
+             
               </div>
             </div>
           </div>
@@ -56,4 +68,39 @@ export default function Stores() {
       </Container>
     </Layout>
   )
+}
+
+
+export async function getStaticProps({ params }) {
+
+  const client = new ApolloClient({
+    uri: 'https://api-eu-west-2.hygraph.com/v2/cl94h07cc52ae01uke8ms0jxr/master',
+    cache: new InMemoryCache(),
+  });
+
+  const data = await client.query({
+    query: gql`
+    query StoresPage {
+      storeLocations {
+        id
+        name
+        phoneNumber
+        address
+        location {
+          latitude
+          longitude
+        }
+      }
+    }
+    `
+  })
+
+ const storeLocations = data.data.storeLocations
+
+ console.log(data)
+  return {
+    props: {
+      storeLocations
+    }
+  }
 }

@@ -1,11 +1,19 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FaShoppingCart } from 'react-icons/fa';
-
+import { useSnipcart } from 'use-snipcart';
 import Container from '@components/Container';
 
 import styles from './Header.module.scss';
 
 const Header = () => {
+  const {locale: activeLocale, locales, asPath } = useRouter()
+
+  const avaibaleLocales = locales.filter(locale => locale !== activeLocale)
+
+  const { cart = {} } = useSnipcart();
+  
+
   return (
     <header className={styles.header}>
       <Container className={styles.headerContainer}>
@@ -16,37 +24,42 @@ const Header = () => {
         </p>
         <ul className={styles.headerLinks}>
           <li>
-            <Link href="#">
-              <a>Link</a>
+            <Link href="/categories/apparel">
+              <a>Apperal</a>
             </Link>
           </li>
           <li>
-            <Link href="#">
-              <a>Link</a>
+            <Link href="/categories/accesories">
+              <a>Accesories</a>
             </Link>
           </li>
           <li>
-            <Link href="#">
-              <a>Link</a>
+            <Link href="/stores">
+              <a>Stores</a>
             </Link>
           </li>
         </ul>
         <p className={styles.headerCart}>
-          <button>
+          <button className="snipcart-checkout">
             <FaShoppingCart />
             <span>
-              $0.00
+              ${cart.subtotal?.toFixed(2)}
             </span>
           </button>
         </p>
         <ul className={styles.headerLocales}>
-          <li>
-            <Link href="#">
+          {avaibaleLocales.map( locale => {
+            return (
+              <li key={locale}>
+            <Link href={asPath} locale={locale}>
               <a>
-                ES
+                { locale.toUpperCase() }
               </a>
             </Link>
           </li>
+            )
+          })}
+          
         </ul>
       </Container>
     </header>
